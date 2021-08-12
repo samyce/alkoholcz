@@ -1,11 +1,12 @@
 <?php
 
+
 namespace App\Model;
 
 
 use Nette\Database\Connection;
 
-class DataImporter
+class RecordRepository
 {
     use \Nette\SmartObject;
 
@@ -16,11 +17,8 @@ class DataImporter
         $this->connection = $connection;
     }
 
-    public function importData(array $data): bool
+    public function save(array $data): bool
     {
-        $this->connection->query('INSERT INTO zaznamy', [
-            $data
-        ]);
+        return $this->connection->query('INSERT INTO zaznamy', $data)->getRowCount() > 0;
     }
-
 }

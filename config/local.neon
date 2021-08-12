@@ -1,10 +1,9 @@
 parameters:
-    dataSourceUrl: "https://www.3it.cz/test/data/json"
 
 
 database:
-	dsn: 'mysql:host=127.0.0.1;dbname=test'
-	user:
-	password:
+	dsn: 'mysql:host=alkoholcz_db;dbname=alkoholcz'
+	user: root
+	password: root
 	options:
 	    lazy: true

@@ -17,19 +17,20 @@ final class HomepagePresenter extends Nette\Application\UI\Presenter
     public $container;
 
     /**
-     * @var \App\Model\DataImporter @inject
+     * @var \App\Facade\DataImporter @inject
      */
     public $dataImporter;
 
+    /**
+     * @var \App\Facade\DataSourceJson @inject
+     */
+    public $dataSourceJson;
+
     public function createComponentGrid():  DataGrid
     {
-        $page = $this->getRequest()->getParameter("grid-page");
-
         $grid = new DataGrid();
 
-        $apiDataSource = new DataSourceJson("https://www.3it.cz/test/data/json", ["page" => $page]);
-
-        $grid->setDataSource($apiDataSource);
+        $grid->setDataSource($this->dataSourceJson);
 
         $grid->addGroupButtonAction('Import')->onClick[] = [$this, 'importFromGrid'];
         $grid->setItemsPerPageList([20, 50, 100], false);
@@ -44,13 +45,20 @@ final class HomepagePresenter extends Nette\Application\UI\Presenter
 
     public function importFromGrid($ids)
     {
-        $data = []; // TODO
-
-        try {
-            $this->dataImporter->importData($data);
+        try
+        {
+            if($this->dataImporter->importData($ids))
+            {
+                $this->flashMessage("Import OK");
+            }
+            else
+            {
+                $this->flashMessage("Import failed. Contact support.");
+            }
         }
         catch (\Exception $e)
         {
+            $this->flashMessage("Import failed. Contact support.");
             $this->flashMessage($e->getMessage());
         }
     }
